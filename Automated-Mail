@@ -1,0 +1,54 @@
+function Mail() {
+  var as = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = as.getSheetByName("Form Responses 7");
+  
+  //Find the last row of a particular column V
+  var Avals = ss.getRange("V1:V").getValues();
+  var fr = Avals.filter(String).length;
+  
+  // Find the last populated row of column A
+  //var lr = ss.getLastRow();
+  var AvalsB = ss.getRange("A1:A").getValues();
+  var frB = AvalsB.filter(String).length;
+  
+  // Formulas
+  
+  
+  var template = as.getSheetByName("Mail Template").getRange(1,1).getValue();
+  
+  //Logger.log(frB)
+  for (var i = fr+1 ; i<=frB;i++){
+    
+    var currentEmail = ss.getRange(i, 14).getValue();
+    
+    
+    var requestedto = ss.getRange(i, 20).getValue();
+    var sfticket = ss.getRange(i,3).getValue();
+    var rtticket = ss.getRange(i,4).getValue();
+  
+    var worktype = ss.getRange(i,5).getValue();
+    var projectname = ss.getRange(i,6).getValue();
+    var filename = ss.getRange(i,7).getValue();
+    var ConcernedAssociate = ss.getRange(i,19).getValue();
+    var region = ss.getRange(i,8).getValue();
+    
+    var specificationfile=ss.getRange(i,11).getValue();
+    var outputfile=ss.getRange(i,12).getValue();
+    
+    var completiondate=ss.getRange(i,9).getValue();
+    
+    var logfile=ss.getRange(i,13).getValue();
+    var additionalcomments=ss.getRange(i,16).getValue();
+    
+    var priority=ss.getRange(i, 18).setFormula("=RIGHT(i,LEN(i))-find('(',i)+1)");
+    var priority=ss.getRange(i, 18).getValue();
+    //priority.setFormula("=RIGHT(i,LEN(i))-find('(',i)+1)");
+  
+    var messageBody = template.replace("{rt}",requestedto).replace("{tkt}",sfticket).replace("{rt}",rtticket).replace("{worktype}",worktype).replace("{projectname}",projectname).replace("{filename}",filename).replace("{requestedby}",ConcernedAssociate).replace("{region}",region).replace("{sf}",specificationfile).replace("{of}",outputfile).replace("{completiondate}",completiondate).replace("{logfile}",logfile).replace("{ac}",additionalcomments);
+    Logger.log(messageBody)
+    //MailApp.sendEmail(currentEmail, "QC-REQUEST  - " + priority, messageBody,{cc: ss.getRange(i, 2).getValue()})
+    
+  
+    //ss.getRange(i, 22).setValue("ASSIGNED");
+  }
+};
